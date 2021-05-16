@@ -7,23 +7,23 @@
 
 #### 如果你想部署这个图库，请注意以下几点：
 
-1.本项目数据库采用SqlServer，很大程度上宣告了只能在Windows平台部署
-2.本项目依赖.Net 5，即使是Windows系统也要求至少Windows7Sp1以上才能使用
-3.由于我完全不会前端所以界面很丑
+1.本项目数据库采用SqlServer，很大程度上宣告了只能在Windows平台部署<br>
+2.本项目依赖.Net 5，即使是Windows系统也要求至少Windows7Sp1以上才能使用<br>
+3.由于我完全不会前端所以界面很丑<br>
 
 #### 项目优势:
 
-1.采用微服务架构，页面和Api是分开的项目，可以部署在不同的设备上，方便管理和提高性能
-2.作为使用方，有ApiKey申请与销毁页面，方便应对Key泄露的情况
-3.作为部署方，有添加/编辑图片页面，方便图片数据管理
-4.可以指定返回值数据类型是Json或Xml，有着更好的兼容性
+1.采用微服务架构，页面和Api是分开的项目，可以部署在不同的设备上，方便管理和提高性能<br>
+2.作为使用方，有ApiKey申请与销毁页面，方便应对Key泄露的情况<br>
+3.作为部署方，有添加/编辑图片页面，方便图片数据管理<br>
+4.可以指定返回值数据类型是Json或Xml，有着更好的兼容性<br>
 
 #### 技术参数：
 
-1.使用[Consul](https://github.com/hashicorp/consul)实现的服务注册与发现，可动态增减集群实例
-2.使用[Ocelot](https://github.com/ThreeMammals/Ocelot)实现的分布式网关，负载均衡
-3.使用JWT的权限认证
-4.使用[Polly](https://github.com/App-vNext/Polly)实现的缓存、限流、熔断
+1.使用[Consul](https://github.com/hashicorp/consul)实现的服务注册与发现，可动态增减集群实例<br>
+2.使用[Ocelot](https://github.com/ThreeMammals/Ocelot)实现的分布式网关，负载均衡<br>
+3.使用JWT的权限认证<br>
+4.使用[Polly](https://github.com/App-vNext/Polly)实现的缓存、限流、熔断<br>
 
 #### 部署方式：
 
@@ -31,11 +31,11 @@
 
 #### 短期计划(TODO):
 
-1.找回密码/修改密码功能
-2.修改昵称功能(并没有什么用)
-3.限制ApiKey的每日访问次数并限制申请ApiKey的间隔时间
+1.找回密码/修改密码功能<br>
+2.修改昵称功能(并没有什么用)<br>
+3.限制ApiKey的每日访问次数并限制申请ApiKey的间隔时间<br>
 
 ###### 长期计划(GUDO):
 
-1.使用[Blazor](https://github.com/dotnet/blazor)或[MAUI](https://github.com/dotnet/maui)重构前端页面(看我先学会哪个)
+1.使用[Blazor](https://github.com/dotnet/blazor)或[MAUI](https://github.com/dotnet/maui)重构前端页面(看我先学会哪个)<br>
 2.把数据库换成[Elasticsearch](https://github.com/elastic/elasticsearch)
