@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewData["Title"] = "调用代码示例";
+}
+
+<h1>Api调用代码示例</h1>
+
+<h3>C#</h3>
+<textarea rows="21" cols="130">
+    string url = "/api/Pictures";
+    using (HttpClient httpClient = new HttpClient())
+    {
+        HttpRequestMessage message = new HttpRequestMessage();
+
+        Dictionary<string, string> body = new Dictionary<string, string>();
+        body.Add("Origin", "Pixiv");
+
+        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+
+        message.Method = HttpMethod.Post;
+        message.RequestUri = new Uri(url);
+
+        StringContent strcontent = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+        var response = httpClient.PostAsync(url, strcontent).Result;
+
+        var responseString = await response.Content.ReadAsStringAsync();
+        return responseString;
+    }
+</textarea>
+
+
+<h3>JavaScript</h3>
+<textarea rows="18" cols="130">
+    let model = { origin: "Pixiv" };
+    let send = JSON.stringify(model);
+    $.ajax({
+        url: "/api/Pictures",
+        type: "post",
+        data: send,
+        success: function (data) {
+            alert(JSON.stringify(data));
+        },
+        datatype: "json",
+        contentType: 'application/json',
+        headers: {
+            'content-type': 'application/json;charset=utf-8',
+            'accept': 'application/json'
+        }
+    });
+</textarea>
+
+
+
+

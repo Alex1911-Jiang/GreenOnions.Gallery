@@ -1,0 +1,255 @@
+﻿
+<div class="row">
+    <div class="col-md-8">
+        <section id="registerForm">
+            @using (Html.BeginForm("Register", "User", new { @id = "form" }, FormMethod.Post, true, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h4>注册新用户</h4>
+                <hr />
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    @Html.Label("Account", "用户名", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("account", "", new { @id = "accountText", @class = "form-control", @onblur = "checkAccount()", onkeyup = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @onpaste = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @oncontextmenu = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')" })
+
+                        <p id="accountInfo" style="color:red"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("NickName", "昵称", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("nickName", "", new { @id = "nickNameText", @class = "form-control", onkeyup = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @onpaste = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @oncontextmenu = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Email", "邮箱", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("email", "", new { @id = "emailText", @class = "form-control", @onblur = "checkEmail()" })
+
+                        <p id="emailInfo" style="color:red"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Password", "密码", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.Password("password", "", new { @id = "passwordText", @class = "form-control", @onblur = "checkPassword()", @onKeyUp = "checkRepassword()" })
+
+                        <p id="passwordInfo" style="color:red"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Repassword", "再次输入密码", new { @class = "col-md-3 control-label" })
+                    <div class="col-md-10">
+                        @Html.Password("repassword", "", new { @id = "repasswordText", @class = "form-control", @onKeyUp = "checkRepassword()" })
+
+                        <p id="repasswordInfo" style="color:red"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("EmialVerify", "邮箱验证码", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("emailverify", "", new { @id = "emailVerifyText", @class = "form-control", onkeyup = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @onpaste = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @oncontextmenu = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')" })
+                        <a id="sendEmail" class="float-right" href="javascript:void(0);" onclick="getEmailVerify(this)">发送邮箱验证码</a>
+
+                        <p id="emailVerifyInfo" style="color:red"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("VerifyCode", "验证码", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("verify", "", new { @id = "verifyText", @class = "form-control", @autocomplete = "off", @onblur = "checkAllInfo()", onkeyup = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @onpaste = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @oncontextmenu = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')" })
+
+                        <p id="verifyInfo" style="color:red"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <img id="verifyImage" alt="验证码图片" class="img" onclick="refresh()" src="/User/VerifyCode" title="点击刷新">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="button" id="btnRegister" value="注册" onclick="submit()" disabled="disabled" />
+
+                        <p style="color:red">@base.ViewBag.Msg</p>
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+</div>
+<script>
+    var accountOk = false;
+    var emailOk = false;
+    var passwordOk = false;
+    var repasswordOk = false;
+
+    function checkAllInfo() {
+        if (accountOk && emailOk && passwordOk && repasswordOk) {
+            $("#btnRegister").removeAttr("disabled")
+        }
+        else {
+            $("#btnRegister").attr("disabled", "disabled");
+        }
+    }
+
+    function getEmailVerify(sendLink) {
+        if (timer_num == 0) {
+
+            var mail = document.getElementById("emailText");
+            var regu = "^(([0-9a-zA-Z]+)|([0-9a-zA-Z]+[_.0-9a-zA-Z-]*[0-9a-zA-Z]+))@@([a-zA-Z0-9-]+[.])+([a-zA-Z]{2}|net|NET|com|COM|gov|GOV|mil|MIL|org|ORG|edu|EDU|int|INT)$";
+            var re = new RegExp(regu);
+            if (mail.value.search(re) == -1) {
+
+                $("#btnRegister").attr("disabled", "disabled");
+
+                var p = document.getElementById("emailInfo")
+                p.style = "color:red";
+                p.innerText = "请输入有效合法的E-mail地址 ！";
+                alert("请输入有效合法的E-mail地址 ！");
+                return;
+            }
+
+            var mail = document.getElementById("emailText");
+            var model = mail.value;
+            callWebApi("/auth/Authentication/CreateVerify", "post", model, function (data) {
+                data = JSON.parse(data);
+                if (data.result == true) {
+                    alert("验证码已发送");
+                }
+            });
+            settime(sendLink);
+        }
+    }
+
+    var timer_num = 0;
+    var timeClock;
+    function settime(sendLink) {
+        timer_num = 60;
+        timeClock = setInterval(function () {
+            timer_num--;
+            sendLink.innerText = timer_num + "秒后重新发送";
+
+            if (timer_num == 0) {
+                clearInterval(timeClock);
+                sendLink.innerText = "重新发送";
+            }
+        }, 1000)
+    }
+    function checkAccount() {
+        var account = document.getElementById("accountText").value;
+        var p = document.getElementById("accountInfo");
+        if (typeof account != "undefined" && account != null && account != "") {
+            callWebApi("/auth/Authentication/CheckAccount", "post", account, function (data) {
+                data = JSON.parse(data);
+                if (data.result == true) {
+                    p.style = "color:green";
+                    p.innerText = data.message;
+                    accountOk = true;
+                }
+                else {
+                    accountOk = false;
+                    $("#verifyImage").attr("src", "/User/VerifyCode");
+                    p.style = "color:red";
+                    p.innerText = data.message;
+                }
+            });
+        }
+        else {
+            p.style = "color:red";
+            p.innerText = "请输入用户名"
+            accountOk = false;
+        }
+    }
+    function checkEmail() {
+        var email = document.getElementById("emailText").value;
+        var regu = "^(([0-9a-zA-Z]+)|([0-9a-zA-Z]+[_.0-9a-zA-Z-]*[0-9a-zA-Z]+))@@([a-zA-Z0-9-]+[.])+([a-zA-Z]{2}|net|NET|com|COM|gov|GOV|mil|MIL|org|ORG|edu|EDU|int|INT)$";
+        var re = new RegExp(regu);
+        if (typeof email == "undefined" || email == null || email == "" || email.search(re) == -1) {
+            emailOk = false;
+            $("#btnRegister").attr("disabled", "disabled");
+
+            var p = document.getElementById("emailInfo")
+            $("#verifyImage").attr("src", "/User/VerifyCode");
+            p.style = "color:red";
+            p.innerText = "请输入有效合法的E-mail地址 ！";
+            return;
+        }
+
+        callWebApi("/auth/Authentication/CheckEmail", "post", email, function (data) {
+            data = JSON.parse(data);
+            var p = document.getElementById("emailInfo")
+            if (data.result == true) {
+                p.style = "color:green";
+                p.innerText = data.message;
+                emailOk = true;
+            }
+            else {
+                emailOk = false;
+                $("#btnRegister").attr("disabled", "disabled");
+                $("#verifyImage").attr("src", "/User/VerifyCode");
+                p.style = "color:red";
+                p.innerText = data.message;
+            }
+        });
+    }
+    function checkPassword() {
+        var pwd = document.getElementById("passwordText").value;
+        var p = document.getElementById("passwordInfo")
+        if (typeof pwd == "undefined" || pwd == null || pwd.length < 6 || pwd.length > 20) {
+            passwordOk = false;
+            $("#btnRegister").attr("disabled", "disabled");
+            $("#verifyImage").attr("src", "/User/VerifyCode");
+            p.style = "color:red";
+            p.innerText = "请输入8-20位由字母和数字组合的密码";
+        }
+        else {
+            p.style = "color:green";
+            p.innerText = "√";
+            passwordOk = true;
+        }
+    }
+    function checkRepassword() {
+        var pwd = document.getElementById("passwordText").value;
+        var repwd = document.getElementById("repasswordText").value;
+
+        var p = document.getElementById("repasswordInfo")
+
+        if (pwd != repwd) {
+            repasswordOk = false;
+            $("#btnRegister").attr("disabled", "disabled");
+            $("#verifyImage").attr("src", "/User/VerifyCode");
+            p.style = "color:red";
+            p.innerText = "两次输入的密码不一致";
+        }
+        else {
+            repasswordOk = true;
+            p.style = "color:green";
+            p.innerText = "√";
+        }
+    }
+    function refresh() {
+        $("#verifyImage").attr("src", "/User/VerifyCode");
+    }
+    function register() {
+        $("#verifyImage").attr("src", "/User/VerifyCode");
+    }
+    function callWebApi(url, type, param, success ) {
+        jQuery.support.cors = true;
+        let send = JSON.stringify(param);
+        $.ajax({
+            url: url,
+            type: type,
+            data: send,
+            datatype: "json",
+            contentType: 'application/json',
+            headers: {
+                'content-type': 'application/json;charset=utf-8',
+                'accept': 'application/json'
+            },
+            success: success
+        });
+    }
+</script>
+

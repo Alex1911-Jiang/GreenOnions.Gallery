@@ -1,0 +1,49 @@
+﻿
+<style>
+    .img {
+        display: block;
+        width: 100%;
+        cursor: zoom-in;
+    }
+</style>
+<script>
+    let flag = false;
+    let defHeight = '0px';
+
+    function changeSize(img) {
+        if (flag) {
+            img.style.width = '100%';
+            img.style.height = defHeight;
+            img.style.cursor = "zoom-in";
+        }
+        else {
+            defHeight = img.parentElement.offsetHeight + "px";
+            img.style.width = '@ViewData["ImageWidth"]' + "px";
+            img.style.height = '@ViewData["ImageHeight"]' + "px";
+            img.style.cursor = "zoom-out";
+        }
+        flag = !flag;
+    }
+</script>
+
+@{
+    ViewData["Title"] = "Get";
+}
+
+<div>
+    @{
+        if (ViewData["ErrorMessage"] != null)
+        {
+            <div class="text-center">
+                <h1 class="display-4">@ViewData["ErrorMessage"]</h1>
+            </div>
+        }
+        else
+        {
+            <div class="wrapper">
+                <img onclick="changeSize(this)" src=@ViewData["ImageUrl"] class="img">
+            </div>
+        }
+    }
+</div>
+

@@ -1,0 +1,270 @@
+﻿<style>
+    h3 code {
+        font-size: inherit !important
+    }
+
+    #main .anchor:hover {
+        text-decoration: none
+    }
+
+    .notice {
+        font-weight: bold;
+        color: #ff4500
+    }
+
+    .markdown-section code {
+        border-radius: 4px;
+        padding: 2px 4px;
+        border: 1px solid #ebebeb
+    }
+</style>
+
+@{
+    ViewData["Title"] = "葱葱图库Api食用说明";
+}
+<h1>@ViewData["Title"]</h1>
+
+<h3>请求</h3>
+<h4>地址:<code>/api/Pictures</code></h4>
+<h4>请求类型:<code>Post</code></h4>
+<br>
+<h4>Header:</h4>
+<table border="1">
+    <thead>
+        <tr align="center">
+            <th>字段名</th>
+            <th>是否必须</th>
+            <th>默认值</th>
+            <th>说明</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr align="center">
+            <td><code>ApiKey</code></td>
+            <td>false</td>
+            <td></td>
+            <td>ApiKey，你可以把ApiKey放在Header或者Body中，如果两个地方都有则以Header为准</td>
+        </tr>
+        <tr align="center">
+            <td><code>Accept</code></td>
+            <td>false</td>
+            <td><code>application/json</code></td>
+            <td>指定响应正文的结构类型，可选参数为：<code>application/json</code>或<code>application/xml</code></td>
+        </tr>
+    </tbody>
+</table>
+<h6>*请注意：Header的参数要以大写字母开头</h6>
+<br>
+<h4>Body:</h4>
+<table border="1">
+    <thead>
+        <tr align="center">
+            <th>字段名</th>
+            <th>数据类型</th>
+            <th>是否必须</th>
+            <th>默认值</th>
+            <th>说明</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr align="center">
+            <td><code>apikey</code></td>
+            <td>String</td>
+            <td>false</td>
+            <td></td>
+            <td>ApiKey，你可以把ApiKey放在Header或者Body中，如果两个地方都有则以Header为准</td>
+        </tr>
+        <tr align="center">
+            <td><code>grading</code></td>
+            <td>String</td>
+            <td>false</td>
+            <td><code>0,1</code></td>
+            <td>
+                年龄分级，<code>0</code>为健全图，<code>1</code>为非R-18色图，<code>2</code>为R-18色图，<code>3</code>为R-18G色图，<code>9</code>为未经分类的图。
+                <br />你可以用逗号隔开多个<code>grading</code>值来随机查询多个分级的图片，不提供 ApiKey 时只允许值为<code>0</code>或<code>1</code>
+                <br />注意类型是String, 不是数组
+            </td>
+        </tr>
+        <tr align="center">
+            <td><code>tag</code></td>
+            <td>String</td>
+            <td>false</td>
+            <td></td>
+            <td>若指定参数，将会返回从插画标签中模糊搜索的结果</td>
+        </tr>
+        <tr align="center">
+            <td><code>illustrator</code></td>
+            <td>String</td>
+            <td>false</td>
+            <td></td>
+            <td>若指定参数，将会返回从插画作者名称/别名中精确搜索的结果</td>
+        </tr>
+        <tr align="center">
+            <td><code>count</code></td>
+            <td>Int32</td>
+            <td>false</td>
+            <td><code>1</code></td>
+            <td>一次返回的结果数量，范围为<code>1</code>到<code>10</code>，不提供 ApiKey 时固定为<code>1</code>；在指定关键字的情况下，结果数量可能会不足指定的数量</td>
+        </tr>
+        <tr align="center">
+            <td><code>proxy</code></td>
+            <td>String</td>
+            <td>false</td>
+            <td><code>i.pixiv.cat</code></td>
+            <td>设置返回的原图链接的域名，你也可以设置为空字符串来得到真正的原图链接，此设置只针对源为Pixiv的图片地址有效</td>
+        </tr>
+        <tr align="center">
+            <td><code>size1200</code></td>
+            <td>Boolean</td>
+            <td>false</td>
+            <td><code>false</code></td>
+            <td>是否使用 master_1200 缩略图，即长或宽最大为 1200px 的缩略图，以节省流量或提升加载速度</td>
+        </tr>
+        <tr align="center">
+            <td><code>origin</code></td>
+            <td>String</td>
+            <td>false</td>
+            <td></td>
+            <td>设置限定图片来源，可选参数为：<code>Pixiv</code>、<code>Twitter</code>不设置则会随机选择一个</td>
+        </tr>
+    </tbody>
+</table>
+<h6>*请注意：即使您将ApiKey放在Header中也必须传递Body参数，空Json对象也可以(就一对大括号)，不传递Body参数的请求将会被中间件拦截并返回400或415</h6>
+
+<br>
+<h3>响应</h3>
+<table border="1">
+    <thead>
+        <tr align="center">
+            <th>字段名</th>
+            <th>数据类型</th>
+            <th>说明</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr align="center">
+            <td><code>code</code></td>
+            <td>Int32</td>
+            <td>返回码，可能值详见后续部分</td>
+        </tr>
+        <tr align="center">
+            <td><code>msg</code></td>
+            <td>String</td>
+            <td>错误信息</td>
+        </tr>
+        <tr align="center">
+            <td><code>count</code></td>
+            <td>Nullable&lt;Int32&gt;</td>
+            <td>结果数量</td>
+        </tr>
+        <tr align="center">
+            <td><code>data</code></td>
+            <td>JArray</td>
+            <td>图片数组</td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<h3>data</h3>
+<table border="1">
+    <thead>
+        <tr align="center">
+            <th>字段名</th>
+            <th>数据类型</th>
+            <th>说明</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr align="center">
+            <td><code>pid</code></td>
+            <td>Int64</td>
+            <td>作品 PID</td>
+        </tr>
+        <tr align="center">
+            <td><code>p</code></td>
+            <td>Int32</td>
+            <td>作品所在 P</td>
+        </tr>
+        <tr align="center">
+            <td><code>title</code></td>
+            <td>String</td>
+            <td>作品标题（早期收录的图片此字段可能为空）</td>
+        </tr>
+        <tr align="center">
+            <td><code>uid</code></td>
+            <td>Int64</td>
+            <td>作者 UID</td>
+        </tr>
+        <tr align="center">
+            <td><code>illustrator</code></td>
+            <td>String</td>
+            <td>作者名</td>
+        </tr>
+        <tr align="center">
+            <td><code>url</code></td>
+            <td>string</td>
+            <td>图片链接（可能存在有些作品因修改或删除而导致 404 的情况）</td>
+        </tr>
+        <tr align="center">
+            <td><code>source</code></td>
+            <td>string</td>
+            <td>图片所在的推文地址</td>
+        </tr>
+        <tr align="center">
+            <td><code>grading</code></td>
+            <td>Int32</td>
+            <td>年龄分级，与请求的<code>grading</code>意义一致</td>
+        </tr>
+        <tr align="center">
+            <td><code>width</code></td>
+            <td>Int32</td>
+            <td>原图宽度(单位:像素，早期收录的图片此字段可能0)</td>
+        </tr>
+        <tr align="center">
+            <td><code>height</code></td>
+            <td>Int32</td>
+            <td>原图高度(单位:像素，早期收录的图片此字段可能0)</td>
+        </tr>
+        <tr align="center">
+            <td><code>tags</code></td>
+            <td>String</td>
+            <td>作品标签，多个会以逗号分隔（懒得再建一个数组了）</td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<h3>code</h3>
+<table border="1">
+    <thead>
+        <tr align="center">
+            <th>值</th>
+            <th>说明</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr align="center">
+            <td><code>200</code></td>
+            <td>成功</td>
+        </tr>
+        <tr align="center">
+            <td><code>401</code></td>
+            <td>APIKEY 不存在或被封禁</td>
+        </tr>
+        <tr align="center">
+            <td><code>403</code></td>
+            <td>不规范的调用而被拒绝访问</td>
+        </tr>
+        <tr align="center">
+            <td><code>404</code></td>
+            <td>找不到符合关键字或源的图片</td>
+        </tr>
+        <tr align="center">
+            <td><code>500</code></td>
+            <td>内部错误，请加QQ:774345562反馈</td>
+        </tr>
+    </tbody>
+</table>
+<br />
+<a href="Example">Api调用示例</a>
+<br />
+<br />

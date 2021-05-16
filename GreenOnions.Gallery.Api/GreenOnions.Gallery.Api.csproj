@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Consul" Version="1.6.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GreenOnions.Gallery.Common\GreenOnions.Gallery.Common.csproj" />
+    <ProjectReference Include="..\GreenOnions.Gallery.Interface\GreenOnions.Gallery.Interface.csproj" />
+    <ProjectReference Include="..\GreenOnions.Gallery.Models\GreenOnions.Gallery.Models.csproj" />
+    <ProjectReference Include="..\GreenOnions.Gallery.Service\GreenOnions.Gallery.Service.csproj" />
+  </ItemGroup>
+
+</Project>

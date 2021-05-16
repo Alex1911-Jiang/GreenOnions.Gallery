@@ -1,0 +1,322 @@
+﻿
+<a class="nav-link text-dark float-left" asp-area="" asp-controller="Manage" asp-action="Index">&lt返回上一层</a>
+<br />
+
+<div class="row">
+    <div class="col-md-8">
+        <section id="editForm">
+            @Html.AntiForgeryToken()
+            <h4>添加图片</h4>
+            <hr />
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                @Html.Label("Origin", "图片来源", new { @class = "col-md-3 control-label" })
+                <div class="col-md-10">
+                    @Html.RadioButton("origin", "Pixiv", new { @id = "origin1", @name = "origin", @class = "custom-radio", @onchange = "changeDiv(this.value)", @checked = "true" })
+                    <a>Pixiv</a>
+                    @Html.RadioButton("origin", "Twitter", new { @id = "origin2", @name = "origin", @class = "custom-radio", @onchange = "changeDiv(this.value)" })
+                    <a>Twitter</a>
+                    <br />
+                </div>
+            </div>
+            <div id="groupPixiv" style="display:inline">
+                <div class="form-group">
+                    @Html.Label("PixivPid", "作品ID", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("pixivPid", "", new { @class = "form-control", @onchange = "pixivPidChanged=true", @onblur = "readPixivByPidAndP()", @onkeyup = @"this.value=this.value.replace(/\D/g,'')", @onafterpaste = @"this.value=this.value.replace(/\D/g,'')" })
+                        <p id="pixivExists" style="color:red"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("PixivP", "图片位于作品页面中第几张(p)", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("pixivP", "", new { @class = "form-control", @onchange = "pixivPChanged=true", @onblur = "readPixivByPidAndP()" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("PixivTitle", "作品标题", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("pixivTitle", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("PixivUid", "作者ID", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("pixivUid", "", new { @class = "form-control", @onblur = "getPixivIllustrator()" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("PixivIllustrator", "作者名称", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("pixivIllustrator", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("PixivAlias", "作者别名(多个请用英文逗号隔开)", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("pixivAlias", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("PixivUrl", "图片URL", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("pixivUrl", "", new { @class = "form-control", @onblur = "loadPixivImage(this.value)" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("PixivGrading", "年龄分级(0:健全 1:色图 2:R-18 3:R-18G 9:未分类)", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("pixivGrading", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("PixivTags", "作品标签(多个请用英文逗号隔开)", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("pixivTags", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <img id="imgPixivPreview" src="" />
+                </div>
+            </div>
+            <div id="groupTwitter" style="display:none ">
+                <div class="form-group">
+                    @Html.Label("TwitterUrl", "图片URL", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("twitterUrl", "", new { @class = "form-control", @onchange = "twitterUrlChanged=true", @onblur = "readTwitterByUrl()" })
+                        <p id="twitterExists" style="color:red"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("TwitterSource", "图片源页面地址", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("twitterSource", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("TwitterTitle", "作品标题", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("twitterTitle", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("TwitterIllustrator", "作者账号(不带@的)", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("twitterIllustrator", "", new { @class = "form-control", @onchange = "twitterIllustratorChanged=true", @onblur = "getTwitterIllustrator()" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("TwitterUserName", "作者用户名(带@的)", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("twitterUserName", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("TwitterAlias", "作者别名(多个请用英文逗号隔开)", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("twitterAlias", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("TwitterGrading", "年龄分级(0:健全 1:色图 2:R-18 3:R-18G 9:未分类)", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("twitterGrading", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("TwitterTags", "作品标签(多个请用英文逗号隔开)", new { @class = "col-md-12 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox("twitterTags", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <img id="imgTwitterPreview" src="https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input id="btnInsert" type="button" onclick="insertPicture()" value="添加" />
+
+                    <p style="color:red">@base.ViewBag.Msg</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+    function getPixivIllustrator() {
+        callWebApi("/api/Manage/FindPixivIllustrator?uid=" + document.getElementById("pixivUid").value, "get", undefined, function (data) {
+            data = JSON.parse(data);
+            if (data.result) {
+                document.getElementById("pixivIllustrator").value = data.illustrator;
+                document.getElementById("pixivAlias").value = data.alias;
+            }
+        });
+    }
+
+    var twitterIllustratorChanged = false;
+
+    function getTwitterIllustrator() {
+        if (twitterIllustratorChanged) {
+            callWebApi("/api/Manage/FindTwitterIllustrator?illustrator=" + document.getElementById("twitterIllustrator").value, "get", undefined, function (data) {
+                if (data.result) {
+                    document.getElementById("twitterUserName").value = data.userName;
+                    document.getElementById("twitterAlias").value = data.alias;
+                    twitterIllustratorChanged = false;
+                }
+            });
+        }
+    }
+
+    function insertPicture() {
+        var origins = document.getElementsByName("origin");
+        var origin = "";
+        for (var i = 0; i < origins.length; i++) {
+            if (origins[i].checked == true) {
+                origin = origins[i].value;
+            }
+        }
+        if (origin == "Twitter") {
+            callWebApi("/api/Manage/InsertTwitterPicture", "post", {
+                url: document.getElementById("twitterUrl").value,
+                source: document.getElementById("twitterSource").value,
+                title: document.getElementById("twitterTitle").value,
+                illustrator: document.getElementById("twitterIllustrator").value,
+                userName: document.getElementById("twitterUserName").value,
+                alias: document.getElementById("twitterAlias").value,
+                grading: document.getElementById("twitterGrading").value,
+                width: document.getElementById("imgTwitterPreview").width,
+                height: document.getElementById("imgTwitterPreview").height,
+                tags: document.getElementById("twitterTags").value
+            }, function (data) {
+                    data = JSON.parse(data);
+                    if (data.result) {
+                        if (typeof data.message != "undefined" && data.message != null && data.message != "") {
+                            alert(data.message);
+                        }
+                        window.location.href = '/Manage/AddPicture?defOrigin=Twitter';
+                    }
+                    else {
+                        alert("添加失败, 请检查api日志")
+                    }
+            });
+        }
+        else if (origin == "Pixiv") {
+            callWebApi("/api/Manage/InsertPixivPicture", "post", {
+                pid:document.getElementById("pixivPid").value,
+                p:document.getElementById("pixivP").value,
+                title:document.getElementById("pixivTitle").value,
+                uid:document.getElementById("pixivUid").value,
+                illustrator:document.getElementById("pixivIllustrator").value,
+                alias:document.getElementById("pixivAlias").value,
+                url:document.getElementById("pixivUrl").value,
+                grading:document.getElementById("pixivGrading").value,
+                width: document.getElementById("imgPixivPreview").width,
+                height: document.getElementById("imgPixivPreview").height,
+                tags:document.getElementById("pixivTags").value
+            }, function (data) {
+                    data = JSON.parse(data);
+                    if (data.result) {
+                        if (typeof data.message != "undefined" && data.message != null && data.message != "") {
+                            alert(data.message);
+                        }
+                        window.location.href = '/Manage/AddPicture?defOrigin=Pixiv';
+                    }
+                    else {
+                        alert("添加失败, 请检查api日志")
+                    }
+            });
+        }
+        else {
+            alert("请选择图片来源");
+        }
+    }
+
+    var pixivPidChanged = false;
+    var pixivPChanged = false;
+
+    function readPixivByPidAndP() {
+        if (pixivPidChanged || pixivPChanged) {
+            var pid = document.getElementById("pixivPid").value;
+            var p = document.getElementById("pixivP").value;
+            if (typeof pid != "undefined" && pid != null && pid != "" && pid > 0 && typeof p != "undefined" && p != null && p != "" && p >= 0) {
+
+                callWebApi("/api/Manage/ReadPixivByPidAndP?pid=" + pid + "&p=" + p, "get", undefined, function (data) {
+                    data = JSON.parse(data);
+                    if (data.result) {
+                        document.getElementById("pixivExists").innerText = "该记录已存在！";
+                    }
+                    else {
+                        document.getElementById("pixivExists").innerText = "";
+                    }
+                    pixivPidChanged = false;
+                    pixivPChanged = false;
+                });
+            }
+        }
+    }
+
+    var twitterUrlChanged = false;
+
+    function readTwitterByUrl() {
+        if (twitterUrlChanged) {
+            var url = document.getElementById("twitterUrl").value;
+            if (typeof url != "undefined" && url != null && url != "") {
+                loadTwitterImage(url);
+                callWebApi("/api/Manage/ReadTwitterByUrl", "post", url, function (data) {
+                    data = JSON.parse(data);
+                    if (data.result) {
+                        loadTwitter(data);
+                    }
+                    twitterUrlChanged = false;
+                });
+            }
+        }
+    }
+
+    function loadPixivImage(url) {
+        $("#imgPixivPreview").attr("src", "");
+        $("#imgPixivPreview").attr("src", url);
+    }
+
+    function loadTwitterImage(url) {
+        $("#imgTwitterPreview").attr("src", "");
+        $("#imgTwitterPreview").attr("src", url);
+    }
+
+    function callWebApi(url, type, param, success) {
+        jQuery.support.cors = true;
+        let send = JSON.stringify(param);
+        $.ajax({
+            url: url,
+            type: type,
+            data: send,
+            datatype: "json",
+            contentType: 'application/json',
+            headers: {
+                'content-type': 'application/json;charset=utf-8',
+                'accept': 'application/json'
+            },
+            beforeSend: function (XHR) {
+                XHR.setRequestHeader('Authorization','bearer ' + '@ViewBag.Token')  //滑动token过期时间
+            },
+            success: success
+        });
+    }
+
+    function changeDiv(origin) {
+        if (origin == "Twitter") {
+            $("#groupPixiv").css('display', 'none')
+            $("#groupTwitter").css('display', 'inline')
+        }
+        else {
+            $("#groupTwitter").css('display', 'none')
+            $("#groupPixiv").css('display', 'inline')
+        }
+    }
+
+    window.onload = function () {
+        changeDiv("@ViewBag.Origin");
+    }
+</script>

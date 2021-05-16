@@ -1,0 +1,54 @@
+﻿
+<div class="row">
+    <div class="col-md-8">
+        <section id="loginForm">
+            @using (Html.BeginForm("Login", "User", new { }, FormMethod.Post, true, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h4>登录以申请或查看ApiKey</h4>
+                <hr />
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    @Html.Label("Account", "用户名", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBox( "account", "", new { @class = "form-control", onkeyup = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @onpaste = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @oncontextmenu = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')" })
+                        <a class="float-right" href="/User/Register">注册新用户</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Password", "密码", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.Password("password", "", new { @class = "form-control" })
+                        @*<a class="float-right" href="/User/ResetPassword">忘记密码</a>*@
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("VerifyCode", "验证码", new { @class = "col-md-2 control-label", onkeyup = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @onpaste = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')", @oncontextmenu = @"value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')" })
+                    <div class="col-md-10">
+                        @Html.TextBox("verify", "", new { @class = "form-control", @autocomplete = "off" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <img alt="验证码图片" class="img" onclick="refresh(this)" src="/User/VerifyCode" title="点击刷新">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="button" id="btnLogin" value="登录" onclick="submit()" />
+
+                        <p style="color:red">@base.ViewBag.Msg</p>
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+</div>
+<script>
+    function refresh(obj) {
+        $(obj).attr("src", "/User/VerifyCode");
+    }
+    function login(obj) {
+        $(obj).attr("src", "/User/VerifyCode");
+    }
+</script>

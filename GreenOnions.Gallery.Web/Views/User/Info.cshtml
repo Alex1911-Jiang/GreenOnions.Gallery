@@ -1,0 +1,85 @@
+﻿
+<h1>用户信息</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <section id="userForm">
+            @Html.AntiForgeryToken()
+            <hr />
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                <a>用户名&nbsp;&nbsp;@ViewBag.Account</a>
+            </div>
+            <div class="form-group">
+                <a>昵称:&nbsp;&nbsp;@ViewBag.NickName</a>
+                @*<input type="text" value="@ViewBag.NickName" onblur="resetNickName()" />  预留给修改昵称*@
+            </div>
+            <div class="form-group">
+                <a>邮箱:&nbsp;&nbsp;@ViewBag.Email</a>
+            </div>
+            <div class="form-group">
+                @if (string.IsNullOrWhiteSpace(ViewBag.ApiKey))
+                {
+                    <a class="float-left">ApiKey:不存在&nbsp;&nbsp;</a>
+                    <a id="lnkCreateApiKey" class="float-left" href="javascript:void(0);" onclick="createApiKey()">申请</a>
+                }
+                else
+                {
+                    <a class="float-left">ApiKey:@ViewBag.ApiKey &nbsp;&nbsp;</a>
+                    <a id="lnkDestroyApiKey" class="float-left" href="javascript:void(0);" onclick="destroyApiKey()">销毁</a>
+                }
+                <br />
+            </div>
+            <div class="form-group">
+                <a class="float-left">如果您泄露了ApiKey，可以销毁并重新申请一个。</a>
+                <a class="float-left">请注意，您每个月只能申请一次ApiKey，请妥善保管。</a>
+            </div>
+        </section>
+    </div>
+</div>
+<script>
+    function destroyApiKey() {
+        callWebApi("/api/User/DestroyApiKey", "post", undefined, function (data) {
+            data = JSON.parse(data);
+            callWebApi("/User/SetToken", "post", data.token, function () {
+                location.reload();
+            });
+        })
+    }
+    function createApiKey() {
+        callWebApi("/api/User/CreateApiKey", "post", undefined, function (data) {
+            data = JSON.parse(data);
+            callWebApi("/User/SetToken", "post", data.token, function () {
+                location.reload();
+            });
+        })
+    }
+    function resetNickName(newNickName) {
+        callWebApi("/auth/Authentication/ResetNickName", "post", newNickName, null, function (data) {
+            data = JSON.parse(data);
+            callWebApi("/User/SetToken", "post", data.token, function () {
+                location.reload();
+            });
+        })
+    }
+    function callWebApi(url, type, param, success) {
+        jQuery.support.cors = true;
+        let send = JSON.stringify(param);
+        $.ajax({
+            url: url,
+            type: type,
+            data: send,
+            datatype: "json",
+            contentType: 'application/json',
+            headers: {
+                'content-type': 'application/json;charset=utf-8',
+                'accept': 'application/json'
+            },
+            beforeSend: function (XHR) {
+                XHR.setRequestHeader('Authorization','bearer ' + '@ViewBag.Token')
+            },
+            success: success
+        });
+    }
+</script>
+

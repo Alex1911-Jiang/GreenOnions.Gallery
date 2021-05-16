@@ -1,0 +1,32 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+
+namespace GreenOnions.Gallery.Api
+{
+    public class TokenFilterAttribute : ActionFilterAttribute
+    {
+        public override void OnResultExecuting(ResultExecutingContext context)
+        {
+            string token = context.HttpContext.Session.GetString("Token");
+            if (string.IsNullOrWhiteSpace(token))
+                return;
+
+            var controller = context.Controller as Controller;
+            controller.ViewBag.Token = token;
+            JwtSecurityToken jwt = new(token);
+            Dictionary<string, string> claims = jwt.Claims.ToDictionary(c1 => c1.Type, c2 => c2.Value);
+            controller.ViewBag.Account = claims["Account"];
+            controller.ViewBag.NickName = claims["NickName"];
+            controller.ViewBag.Permission = claims["Permission"];
+            controller.ViewBag.ApiKey = claims["ApiKey"];
+            controller.ViewBag.Email = claims["Email"];
+
+            base.OnResultExecuting(context);
+        }
+    }
+}

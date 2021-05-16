@@ -1,0 +1,67 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/{url}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/api/{url}",
+      "UpstreamHttpMethod": [ "Get", "Post", "OPTIONS" ],
+      "ServiceName": "GreenOnionsApi",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      },
+      "UseServiceDiscovery": true,
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "QoSOptions": { //熔断
+        "ExceptionsAllowedBeforeBreaking": 30,
+        "DurationOfBreak": 5000,
+        "TimeoutValue": 10000
+      },
+      "RateLimitOptions": { //限流
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "5m",
+        "PeriodTimespan": 5,
+        "Limit": 50
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/auth/{url}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/auth/{url}",
+      "UpstreamHttpMethod": [ "Get", "Post", "OPTIONS" ],
+      "ServiceName": "GreenOnionsAuthentication",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      },
+      "UseServiceDiscovery": true
+    },
+    {
+      "DownstreamPathTemplate": "/{url}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/{url}",
+      "UpstreamHttpMethod": [ "Get", "Post", "OPTIONS" ],
+      "ServiceName": "GreenOnionsGallery",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      },
+      "UseServiceDiscovery": true,
+      "FileCacheOptions": { //"缓存"
+        "TtlSeconds": 1
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://127.0.0.1:1911",
+    "ServiceDiscoveryProvider": {
+      "Scheme": "http",
+      "Host": "127.0.0.1",
+      "Port": 8500,
+      "Type": "Consul"
+    },
+    "RateLimitOptions": {
+      "QuotaExceededMessage": "当前请求总量已超过服务器负载，请稍后再试。",
+      "HttpStatusCode": 403
+    }
+  }
+}
+

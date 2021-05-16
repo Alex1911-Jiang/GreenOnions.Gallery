@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">葱葱图库</h1>
+    <h3>现在图库中有 @ViewBag.PictureTotal 张图片</h3>
+    <h4>其中Pixiv @ViewBag.PixivCount 张，Twitter @ViewBag.TwitterCount 张</h4>
+    <h6>Pixiv：健全图 @ViewBag.Pixiv0Count 张，色图 @ViewBag.Pixiv1Count 张，R-18色图 @ViewBag.Pixiv2Count 张，R-18G色图 @ViewBag.Pixiv3Count 张，未分类 @ViewBag.Pixiv9Count 张</h6>
+    <h6>Twitter：健全图 @ViewBag.Twitter0Count 张，色图 @ViewBag.Twitter1Count 张，R-18色图 @ViewBag.Twitter2Count 张，R-18G色图 @ViewBag.Twitter3Count 张，未分类 @ViewBag.Twitter9Count 张</h6>
+</div>
