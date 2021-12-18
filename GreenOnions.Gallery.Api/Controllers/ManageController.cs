@@ -279,7 +279,7 @@ namespace GreenOnions.Gallery.Api.Controllers
                $"  INSERT INTO [GreenOnionsGallery].[dbo].[PixivIllustrator] ([Id],[Illustrator],[Alias]) VALUES('{model.Uid}','{model.Illustrator}','{model.Alias}') " +
                $"ELSE " +
                $"  UPDATE [GreenOnionsGallery].[dbo].[PixivIllustrator] SET [Illustrator] = '{model.Illustrator}',[Alias] = '{model.Alias}' WHERE [Id] = {model.Uid} " +
-               $"INSERT INTO [GreenOnionsGallery].[dbo].[PixivPictures] ([Pid],[P],[PageCount],[Title],[Uid],[Url],[Grading],[Width],[Height],[Tags]) VALUES ({model.Pid},{model.P},{pageCount},N'{model.Title}',{model.Uid},'{url}',{model.Grading},{model.Width},{model.Height},'{model.Tags}') " +
+               $"INSERT INTO [GreenOnionsGallery].[dbo].[PixivPictures] ([Pid],[P],[PageCount],[Title],[Uid],[Url],[Grading],[Width],[Height],[Tags]) VALUES ({model.Pid},{model.P},{pageCount},N'{model.Title}',{model.Uid},'{url}',{model.Grading},{model.Width},{model.Height},'{model.Tags.Replace("'", "''")}') " +
                $"COMMIT tran");
             _logger.LogWarning($"添加pixiv记录, pid={model.Pid}, p={model.P} 完成, 是否成功={i > 0}");
 
@@ -336,7 +336,7 @@ namespace GreenOnions.Gallery.Api.Controllers
                 $"  INSERT INTO [GreenOnionsGallery].[dbo].[TwitterIllustrator] ([Illustrator],[UserName],[Alias]) VALUES('{model.Illustrator}','{model.UserName}','{model.Alias}') " +
                 $"ELSE " +
                 $"  UPDATE [GreenOnionsGallery].[dbo].[TwitterIllustrator] SET [UserName] = '{model.UserName}', [Alias] = '{model.Alias}' WHERE [Illustrator] = '{model.Illustrator}' " +
-                $"INSERT INTO [GreenOnionsGallery].[dbo].[TwitterPictures] ([Url],[Source],[Title],[Uid],[Grading],[Width],[Height],[Tags]) VALUES ('{model.Url}','{model.Source}',N'{model.Title}',(SELECT [Id] FROM [GreenOnionsGallery].[dbo].[TwitterIllustrator] WHERE [Illustrator]='{model.Illustrator}'),{model.Grading},{model.Width},{model.Height},'{model.Tags}') " +
+                $"INSERT INTO [GreenOnionsGallery].[dbo].[TwitterPictures] ([Url],[Source],[Title],[Uid],[Grading],[Width],[Height],[Tags]) VALUES ('{model.Url}','{model.Source}',N'{model.Title}',(SELECT [Id] FROM [GreenOnionsGallery].[dbo].[TwitterIllustrator] WHERE [Illustrator]='{model.Illustrator}'),{model.Grading},{model.Width},{model.Height},'{model.Tags.Replace("'", "''")}') " +
                 $"COMMIT tran");
 
             _logger.LogWarning($"添加twitter记录, url={model.Url} 完成, 是否成功={i > 0}");
@@ -360,7 +360,7 @@ namespace GreenOnions.Gallery.Api.Controllers
                $"  INSERT INTO [GreenOnionsGallery].[dbo].[PixivIllustrator] ([Id],[Illustrator],[Alias]) VALUES('{model.Uid}','{model.Illustrator}','{model.Alias}') " +
                $"ELSE " +
                $"  UPDATE [GreenOnionsGallery].[dbo].[PixivIllustrator] SET [Illustrator] = '{model.Illustrator}',[Alias] = '{model.Alias}' WHERE [Id] = {model.Uid} " +
-               $"UPDATE [GreenOnionsGallery].[dbo].[PixivPictures] SET [PageCount]={model.PageCount},[Title]=N'{model.Title}',[Uid]={model.Uid},[Url]='{url}',[Grading]={model.Grading},[Width]={model.Width},[Height]={model.Height},[Tags]='{model.Tags}' WHERE [Pid]={model.Pid} AND [P]={model.P} " +
+               $"UPDATE [GreenOnionsGallery].[dbo].[PixivPictures] SET [PageCount]={model.PageCount},[Title]=N'{model.Title}',[Uid]={model.Uid},[Url]='{url}',[Grading]={model.Grading},[Width]={model.Width},[Height]={model.Height},[Tags]='{model.Tags.Replace("'","''")}' WHERE [Pid]={model.Pid} AND [P]={model.P} " +
                $"COMMIT tran");
             _logger.LogWarning($"更新pixiv记录, pid={model.Pid}, p={model.P} 完成, 是否成功={i > 0}");
             return JsonConvert.SerializeObject(new
@@ -383,7 +383,7 @@ namespace GreenOnions.Gallery.Api.Controllers
                 $"  INSERT INTO [GreenOnionsGallery].[dbo].[TwitterIllustrator] ([Illustrator],[UserName],[Alias]) VALUES('{model.Illustrator}','{model.UserName}','{model.Alias}') " +
                 $"ELSE " +
                 $"  UPDATE [GreenOnionsGallery].[dbo].[TwitterIllustrator] SET [UserName] = '{model.UserName}', [Alias] = '{model.Alias}' WHERE [Illustrator] = '{model.Illustrator}' " +
-                $"UPDATE [GreenOnionsGallery].[dbo].[TwitterPictures] SET [Source]='{model.Source}',[Title]=N'{model.Title}',[Uid]=(SELECT [Id] FROM [GreenOnionsGallery].[dbo].[TwitterIllustrator] WHERE [Illustrator]='{model.Illustrator}'),[Grading]={model.Grading},[Width]={model.Width},[Height]={model.Height},[Tags]='{model.Tags}' WHERE [Url]='{model.Url}' " +
+                $"UPDATE [GreenOnionsGallery].[dbo].[TwitterPictures] SET [Source]='{model.Source}',[Title]=N'{model.Title}',[Uid]=(SELECT [Id] FROM [GreenOnionsGallery].[dbo].[TwitterIllustrator] WHERE [Illustrator]='{model.Illustrator}'),[Grading]={model.Grading},[Width]={model.Width},[Height]={model.Height},[Tags]='{model.Tags.Replace("'", "''")}' WHERE [Url]='{model.Url}' " +
                 $"COMMIT tran");
 
             _logger.LogWarning($"更新twitter记录, url={model.Url} 完成, 是否成功={i > 0}");
