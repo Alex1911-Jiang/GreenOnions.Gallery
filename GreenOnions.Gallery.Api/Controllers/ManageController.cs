@@ -33,6 +33,8 @@ namespace GreenOnions.Gallery.Api.Controllers
         [HttpGet]
         public async Task<PictureCountModel> Count()
         {
+            _logger.LogInformation($"Api 获取图片数量");
+
             DataSet dsPicCount = await _sqlService.SelectMultiTable(
 "SELECT [Grading], COUNT([Grading]) AS [Count] FROM [GreenOnionsGallery].[dbo].[PixivPictures] GROUP BY [Grading];" +
 "SELECT [Grading], COUNT([Grading]) AS [Count] FROM [GreenOnionsGallery].[dbo].[TwitterPictures] GROUP BY [Grading];",
@@ -86,6 +88,8 @@ namespace GreenOnions.Gallery.Api.Controllers
                 }
             }
 
+            _logger.LogInformation($"Api 返回图片数量");
+
             return pictureCountModel;
         }
 
@@ -106,8 +110,8 @@ namespace GreenOnions.Gallery.Api.Controllers
                     illustrator = ds.Tables[0].Rows[0]["Illustrator"],
                     alias = ds.Tables[0].Rows[0]["Alias"],
                     originalUrl = string.Format(ds.Tables[0].Rows[0]["Url"].ToString(), "i.pximg.net", "original", ""),
-                    originalCatUrl = string.Format(ds.Tables[0].Rows[0]["Url"].ToString(), "i.pixiv.cat", "original", ""),
-                    masterCatUrl = string.Format(ds.Tables[0].Rows[0]["Url"].ToString(), "i.pixiv.cat", "master", "_master1200").Replace(".png", ".jpg").Replace(".gif", ".jpg"),
+                    originalCatUrl = string.Format(ds.Tables[0].Rows[0]["Url"].ToString(), "i.pixiv.re", "original", ""),
+                    masterCatUrl = string.Format(ds.Tables[0].Rows[0]["Url"].ToString(), "i.pixiv.re", "master", "_master1200").Replace(".png", ".jpg").Replace(".gif", ".jpg"),
                     grading = ds.Tables[0].Rows[0]["Grading"],
                     tags = ds.Tables[0].Rows[0]["Tags"]
                 });
@@ -205,8 +209,8 @@ namespace GreenOnions.Gallery.Api.Controllers
                     illustrator = ds.Tables[0].Rows[0]["Illustrator"],
                     alias = ds.Tables[0].Rows[0]["Alias"],
                     originalUrl = string.Format(ds.Tables[0].Rows[0]["Url"].ToString(), "i.pximg.net", "original", ""),
-                    originalCatUrl = string.Format(ds.Tables[0].Rows[0]["Url"].ToString(), "i.pixiv.cat", "original", ""),
-                    masterCatUrl = string.Format(ds.Tables[0].Rows[0]["Url"].ToString(), "i.pixiv.cat", "master", "_master1200").Replace(".png", ".jpg").Replace(".gif", ".jpg"),
+                    originalCatUrl = string.Format(ds.Tables[0].Rows[0]["Url"].ToString(), "i.pixiv.re", "original", ""),
+                    masterCatUrl = string.Format(ds.Tables[0].Rows[0]["Url"].ToString(), "i.pixiv.re", "master", "_master1200").Replace(".png", ".jpg").Replace(".gif", ".jpg"),
                     grading = ds.Tables[0].Rows[0]["Grading"],
                     tags = ds.Tables[0].Rows[0]["Tags"]
                 });
@@ -265,7 +269,7 @@ namespace GreenOnions.Gallery.Api.Controllers
         {
             _logger.LogWarning($"添加pixiv记录, pid={model.Pid}, p={model.P} 开始");
 
-            string url = model.Url.Replace("i.pximg.net", "{0}").Replace("i.pixiv.cat", "{0}").Replace("pximg.net", "{0}").Replace("pixiv.cat", "{0}").Replace("-original", "-{1}").Replace("-master", "-{1}").Replace("_master1200", "{2}");
+            string url = model.Url.Replace("i.pximg.net", "{0}").Replace("i.pixiv.re", "{0}").Replace("pximg.net", "{0}").Replace("pixiv.cat", "{0}").Replace("-original", "-{1}").Replace("-master", "-{1}").Replace("_master1200", "{2}");
             if (!url.Contains("{2}"))
                 url = url.Insert(url.LastIndexOf("."), "{2}");
 
@@ -303,7 +307,7 @@ namespace GreenOnions.Gallery.Api.Controllers
 
             try
             {
-                pixivCatApiResponse = await WebApiHelper.InvokeApiPostAsync("https://api.pixiv.cat/v1/generate", keyValuePairs );
+                pixivCatApiResponse = await WebApiHelper.InvokeApiPostAsync("https://api.pixiv.re/v1/generate", keyValuePairs );
 
                 JObject jPixivCatApiResponse = (JObject)JsonConvert.DeserializeObject(pixivCatApiResponse);
 
@@ -349,7 +353,7 @@ namespace GreenOnions.Gallery.Api.Controllers
         [HttpPost]
         public async Task<string> UpdatePixivPicture(SavePixivPictureModel model)
         {
-            string url = model.Url.Replace("i.pximg.net", "{0}").Replace("i.pixiv.cat", "{0}").Replace("pximg.net", "{0}").Replace("pixiv.cat", "{0}").Replace("-original", "-{1}").Replace("-master", "-{1}").Replace("_master1200", "{2}");
+            string url = model.Url.Replace("i.pximg.net", "{0}").Replace("i.pixiv.re", "{0}").Replace("pximg.net", "{0}").Replace("pixiv.cat", "{0}").Replace("-original", "-{1}").Replace("-master", "-{1}").Replace("_master1200", "{2}");
             if (!url.Contains("{2}"))
                 url = url.Insert(url.LastIndexOf("."), "{2}");
 

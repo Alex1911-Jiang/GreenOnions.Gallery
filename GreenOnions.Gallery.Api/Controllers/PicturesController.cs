@@ -218,6 +218,8 @@ namespace GreenOnions.Gallery.Api.Controllers
                                 pximg = "pximg.net";
                                 if (string.Equals(model.Proxy, "i.pixiv.cat", StringComparison.CurrentCultureIgnoreCase))
                                     proxy = "pixiv.cat";
+                                if (string.Equals(model.Proxy, "i.pixiv.re", StringComparison.CurrentCultureIgnoreCase))
+                                    proxy = "pixiv.re";
                             }
 
                             string host = string.IsNullOrWhiteSpace(model.Proxy) ? pximg : proxy;

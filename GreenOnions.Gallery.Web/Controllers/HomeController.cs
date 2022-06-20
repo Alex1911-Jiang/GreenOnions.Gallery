@@ -36,6 +36,8 @@ namespace GreenOnions.Gallery.Web.Controllers
 
             string result = await WebApiHelper.InvokeApiGetAsync($"{_configuration["GatewayHost"]}/api/Manage/Count");
 
+            _logger.LogInformation("查询图片数量成功");
+
             if (!string.IsNullOrEmpty(result))
             {
                 JObject jToken = (JObject)JsonConvert.DeserializeObject(result);
@@ -54,6 +56,8 @@ namespace GreenOnions.Gallery.Web.Controllers
                 ViewBag.Twitter3Count = jToken["twitter3Count"].ToString();
                 ViewBag.Twitter9Count = jToken["twitter9Count"].ToString();
             }
+
+            _logger.LogInformation("渲染页面");
 
             return View();
         }

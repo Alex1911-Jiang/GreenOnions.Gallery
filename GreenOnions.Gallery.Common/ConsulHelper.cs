@@ -19,12 +19,14 @@ namespace GreenOnions.Gallery.Common
 
             string iDebugPort = groupName switch
             {
-                "GreenOnionsGallery" => "9100",
+                "GreenOnionsAuthentication" => "9100",
                 "GreenOnionsApi" => "9200",
-                "GreenOnionsAuthentication" => "9300",
+                "GreenOnionsGallery" => "9300",
                 _ => "1911"
             };
             int port = int.Parse(configuration["port"] ?? iDebugPort);
+
+            Console.WriteLine($"服务成功启动在:{port}端口");
 
             client.Agent.ServiceRegister(new AgentServiceRegistration()
             {
