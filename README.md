@@ -17,22 +17,16 @@
 
 #### 技术参数：
 
-1.使用[Consul](https://github.com/hashicorp/consul)实现的服务注册与发现，可动态增减集群实例<br>
-2.使用[Ocelot](https://github.com/ThreeMammals/Ocelot)实现的分布式网关，负载均衡<br>
-3.使用JWT的权限认证<br>
-4.使用[Polly](https://github.com/App-vNext/Polly)实现的缓存、限流、熔断<br>
+1.使用[Ocelot](https://github.com/ThreeMammals/Ocelot)实现的分布式网关，负载均衡<br>
+2.使用JWT的权限认证<br>
+3.使用[Polly](https://github.com/App-vNext/Polly)实现的缓存、限流、熔断<br>
 
 #### 部署方式：
 
 （真有人要部署再写）
 
-#### 短期计划(TODO):
+#### TODO:
 
 1.找回密码/修改密码功能<br>
 2.修改昵称功能(并没有什么用)<br>
 3.限制ApiKey的每日访问次数并限制申请ApiKey的间隔时间<br>
-
-###### 长期计划(GUDO):
-
-1.使用[Blazor](https://github.com/dotnet/blazor)或[MAUI](https://github.com/dotnet/maui)重构前端页面(看我先学会哪个)<br>
-2.把数据库换成[Elasticsearch](https://github.com/elastic/elasticsearch)
